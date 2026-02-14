@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Harshita ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffeef2;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Heartbeat Animation */
+        .heartbeat {
+            animation: beat 1s infinite ease-in-out;
+        }
+
+        @keyframes beat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        #questionPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 { color: #d63384; font-size: 2.5rem; margin-bottom: 20px; }
+
+        .buttons-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        #yesBtn { 
+            background-color: #ff4d6d; 
+            color: white; 
+            z-index: 100; 
+            position: relative;
+        }
+        
+        #noBtn { 
+            background-color: #19df54; 
+            color: white; 
+            z-index: 99;
+            /* Added absolute position with a fallback initial spot */
+            position: absolute;
+            left: 55%; 
+        }
+
+        .petal {
+            position: absolute;
+            background-color: #ff4d6d;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall 4s linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="heartbeat" id="bodyTag">
+
+    <div id="questionPage">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR4eXh6NHRrYm9pZzR4eXh6NHRrYm9pZzR4ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" width="180">
+        <h1>Harshita, will you be my Valentine? 🌹</h1>
+        
+        <div class="buttons-container">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div id="successPage" class="hidden">
+        <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjJyMXM0Y213NGx6MWNwdTNybGNyZTJmNWhqenE2d2Eyc3F3dmg1MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WK7omsLop0431tZjXb/giphy.gif" width="250">
+        <h1 style="font-size: 4rem;">Love you Harshita! ❤️</h1>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const bodyTag = document.getElementById('bodyTag');
+        const questionPage = document.getElementById('questionPage');
+        const successPage = document.getElementById('successPage');
+
+        let yesScale = 1;
+        let noScale = 1;
+        let attemptCount = 0;
+        let heartSpeed = 1.0;
+
+        const escapeAction = () => {
+            attemptCount++;
+
+            // 1. Move No button randomly
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            noBtn.style.position = "fixed"; // Switch to fixed so it moves relative to screen
+
+            // 2. Shrink No, Grow Yes
+            yesScale += 0.4;
+            noScale -= 0.12;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            noBtn.style.transform = `scale(${noScale})`;
+
+            // 3. Speed up heartbeat
+            heartSpeed -= 0.15;
+            if (heartSpeed < 0.1) heartSpeed = 0.1;
+            bodyTag.style.animationDuration = `${heartSpeed}s`;
+
+            // 4. Vanish No after 8 attempts
+            if (attemptCount >= 8 || noScale <= 0.2) {
+                noBtn.classList.add('hidden');
+            }
+        };
+
+        // Triggers
+        noBtn.addEventListener('mouseover', escapeAction);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            escapeAction();
+        });
+
+        // Success
+        yesBtn.addEventListener('click', () => {
+            questionPage.classList.add('hidden');
+            successPage.classList.remove('hidden');
+            bodyTag.style.animationDuration = "1.5s";
+            bodyTag.style.backgroundColor = "#fff0f3";
+            setInterval(createPetal, 150);
+        });
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.style.left = Math.random() * 100 + 'vw';
+            const size = Math.random() * 20 + 10 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            petal.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 4000);
+        }
+    </script>
+</body>
+</html>
